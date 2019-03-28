@@ -4,9 +4,15 @@ namespace Matrix
 {
     public static class Logger
     {
-        public static ILoggerFactory Factory = LoggerFactory.Create(builder =>
+        static ILoggerFactory factory;
+
+        /// <summary>
+        /// Needs to be externally set, one typical use case would be it's set during Startup configuration
+        /// </summary>
+        public static ILoggerFactory Factory
         {
-            
-        });
+            get { return factory ?? new LoggerFactory(); }
+            set { factory = value; }
+        }
     }
 }
