@@ -1,13 +1,13 @@
-﻿#define KLUDGE
-
-using System;
-
-namespace Matrix.Client
+﻿namespace Matrix.Client
 {
-#if KLUDGE
+    /**
+     * Handles end to end key operations on behalf of the client.
+     */
     public class Keys
     {
-        public Keys(MatrixAPI api) { }
+        public Keys(MatrixAPI api)
+        {
+            
+        }
     }
-#endif
 }
