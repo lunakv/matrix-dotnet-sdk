@@ -9,9 +9,8 @@ namespace Matrix
         /// <summary>
         /// Needs to be externally set, one typical use case would be it's set during Startup configuration
         /// </summary>
-        public static ILoggerFactory Factory
-        {
-            get { return factory ?? new LoggerFactory(); }
+		public static ILoggerFactory Factory {
+			get { return factory ?? new LoggerFactory(); }
             set { factory = value; }
         }
     }
