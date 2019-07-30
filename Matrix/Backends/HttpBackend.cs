@@ -64,7 +64,7 @@ namespace Matrix.Backends
 				{
 					retryAfter = e.ErrorObject["retry_after_ms"].ToObject<int>();
 				}
-				apiResult.error = new MatrixRequestError(e.Message, e.ErrorCode, HttpStatusCode.InternalServerError, retryAfter);
+				apiResult.error = new MatrixRequestError(e.Message, e.ErrorCode, e.Status, retryAfter);
 			}
 			return apiResult;
 		}
@@ -168,13 +168,7 @@ namespace Matrix.Backends
 			try
 			{
 				httpResult = await task;
-				if (httpResult.StatusCode.HasFlag(HttpStatusCode.OK) ){
-					stask = httpResult.Content.ReadAsStringAsync();
-				}
-				else
-				{
-					return new Tuple<JToken, HttpStatusCode>(null, httpResult.StatusCode);
-				}
+				stask = httpResult.Content.ReadAsStringAsync();
 			}
 			catch(WebException e){
 				throw e;
@@ -184,9 +178,17 @@ namespace Matrix.Backends
 			}
 
 			string json = await stask;
-			result = JToken.Parse(json);
+            try
+            {
+                result = JToken.Parse(json);
+            }
+            catch (JsonReaderException)
+            {
+                return new Tuple<JToken, HttpStatusCode>(null, httpResult.StatusCode);
+            }
+
 			if (result.Type == JTokenType.Object && result ["errcode"] != null) {
-				throw new MatrixServerError (result ["errcode"].ToObject<string> (), result ["error"].ToObject<string> (), result as JObject);
+				throw new MatrixServerError (result ["errcode"].ToObject<string> (), result ["error"].ToObject<string> (), httpResult.StatusCode, result as JObject);
 			}
 			return new Tuple<JToken, HttpStatusCode>(result, httpResult.StatusCode);
 		}

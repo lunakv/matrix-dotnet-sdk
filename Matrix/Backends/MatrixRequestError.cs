@@ -19,11 +19,12 @@ namespace Matrix.Backends
 
 		public string GetErrorString()
 		{
-			if (Status != HttpStatusCode.OK) {
-				return "Got a Http Error :" + Status + " during request.";
-			}
+			if (string.IsNullOrEmpty(MatrixError))
+            {
+                return $"{(int)Status}: {Status}";
+            }
 
-			return "Got a Matrix Error: " + MatrixErrorCode + " '" + MatrixError + "'";
+            return $"{MatrixError}";
 		}
 
 		public override string ToString ()

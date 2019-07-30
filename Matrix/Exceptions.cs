@@ -1,6 +1,7 @@
 ﻿using System;
 using Matrix.Backends;
 using Newtonsoft.Json.Linq;
+using System.Net;
 
 namespace Matrix
 {
@@ -14,18 +15,19 @@ namespace Matrix
 	}
 
 	public class MatrixServerError : MatrixException {
+        public readonly HttpStatusCode Status;
 		public readonly MatrixErrorCode ErrorCode;
 		public readonly string ErrorCodeStr;
 		public readonly JObject ErrorObject;
 
-		public MatrixServerError (string errorcode, string message, JObject errorObject) : base(message){
+		public MatrixServerError (string errorcode, string message, HttpStatusCode status, JObject errorObject) : base(message){
 			if (!Enum.TryParse (errorcode, out ErrorCode)) {
 				ErrorCode = MatrixErrorCode.CL_UNKNOWN_ERROR_CODE;
-				ErrorObject = errorObject;
 			}
-			ErrorCodeStr = errorcode;
+            Status = status;
+            ErrorObject = errorObject;
+            ErrorCodeStr = errorcode;
 		}
-
 	}
 
 	public class MatrixBadFormatException : MatrixException {
@@ -33,5 +35,4 @@ namespace Matrix
 
 		}
 	}
-
 }
