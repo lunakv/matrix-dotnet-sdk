@@ -136,6 +136,11 @@ namespace Matrix.Client
             return result;
         }
 
+        public void RejectInvite(string roomId)
+        {
+            Api.RoomLeave(roomId);
+        }
+
         /// <param name="syncToken"> If you stored the sync token before, you can set it for the API here</param>
         public void StartSync(string syncToken = "")
         {
